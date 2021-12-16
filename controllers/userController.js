@@ -157,11 +157,7 @@ export const loginUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     // filtering out paranoid users
-    const user = await User.find({
-      $where: function () {
-        return this.paranoid == false;
-      },
-    });
+    const user = await User.find({ paranoid: false });
     // if user does not found then return error message
     if (!user.length > 0) {
       return res.status(400).json({
