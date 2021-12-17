@@ -48,7 +48,7 @@ export const registerUser = async (req, res) => {
           return jsonResponse(
             res,
             codes.BadRequest,
-            errorMessages.userExists,
+            errorMessages.ParanoidUser,
             {},
             successMessages.noMessage
           );
@@ -56,7 +56,7 @@ export const registerUser = async (req, res) => {
         return jsonResponse(
           res,
           codes.BadRequest,
-          errorMessages.ParanoidUser,
+          errorMessages.userExists,
           {},
           successMessages.noMessage
         );
