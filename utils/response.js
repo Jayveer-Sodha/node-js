@@ -3,7 +3,7 @@ const jsonResponse = (res, status, error, payload, message = "") => {
     JSON.stringify({
       error: error,
       payload: payload,
-      message: message,
+      messages: message,
       status: status.toString(),
     })
   );
