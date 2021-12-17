@@ -7,30 +7,32 @@ import bodyParser from "body-parser";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 import { PORT } from "./config/environmentVariables.js";
 
-// initializing our Express application here.
+// INITIALIZING EXPRESS APP HERE
 const app = express();
 
-// database connection
+// DATABASE CONNECTION
 connectDB();
 
-//  middleware
+// MIDDLEWARE
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 
-// api calls
+// API ROUTES
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to ems-backend!");
 });
-app.use("/api", authRoute);
 
-// error handling
+// USER API ROUTES
+app.use("/api/user", authRoute);
+
+// ERROR HANDLING
 app.use(notFound);
 app.use(errorHandler);
 
-// define port number
+// DEFINING PORT
 const port = PORT;
 
-// listening port
+// LISTENING TO PORT
 app.listen(port, () => {
   console.log(`server is up and running on port: ${port}.`);
 });
