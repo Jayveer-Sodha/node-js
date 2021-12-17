@@ -45,19 +45,21 @@ export const registerUser = async (req, res) => {
     User.findOne({ email }).exec(async (err, user) => {
       if (user) {
         if (user.paranoid == true) {
-          return res.status(200).json({
-            error: "",
-            payload: {},
-            message: "User found in paranoid mode",
-            status: 200,
-          });
+          return jsonResponse(
+            res,
+            codes.BadRequest,
+            errorMessages.userExists,
+            {},
+            successMessages.noMessage
+          );
         }
-        return res.status(400).json({
-          error: "",
-          payload: {},
-          message: "User already exists ",
-          status: 400,
-        });
+        return jsonResponse(
+          res,
+          codes.BadRequest,
+          errorMessages.ParanoidUser,
+          {},
+          successMessages.noMessage
+        );
       }
       if (!user) {
         const newUser = await User.create({

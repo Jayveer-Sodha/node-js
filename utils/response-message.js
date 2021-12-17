@@ -10,6 +10,7 @@ export const successMessages = {
   Delete: "Successfully Deleted !",
   profileSaved: "Profile updated successfully",
   Fetch: "Success!",
+  noMessage: "",
 };
 
 export const errorMessages = {
@@ -27,6 +28,8 @@ export const errorMessages = {
   noEmailFound: "Email address not found",
   invalidRole: "You do not have Access permission",
   noError: "",
+  userExists: "User already exists",
+  ParanoidUser: "User found in paranoid mode",
 };
 
 export const codes = {
