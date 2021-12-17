@@ -1,5 +1,10 @@
 import { User } from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import {
+  codes,
+  errorMessages,
+  successMessages,
+} from "../utils/response-message.js";
 import { decryptionAES } from "../validators/dataEncryption.js";
 
 // registerUser POST request controller
@@ -86,28 +91,30 @@ export const registerUser = async (req, res) => {
           password,
         });
         if (newUser) {
-          const token = generateToken(newUser);
-          return res.status(201).json({
-            error: "",
-            payload: {
-              username: newUser.username,
-              email: newUser.email,
-              role: newUser.user_role,
-              token: token,
-            },
-            message: "User registered successfully",
-            status: 2001,
+          const token = generateToken({
+            id: newUser._id,
+            role: newUser.user_role,
+            email: newUser.email,
           });
+          const { username, email, _id } = await newUser;
+          const payload = {
+            username,
+            email,
+            _id,
+            token,
+          };
+          return jsonResponse(
+            res,
+            codes.EntryCreated,
+            errorMessages.noError,
+            payload,
+            successMessages.Create
+          );
         }
       }
     });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      payload: {},
-      message: "Some error occurred while registering user",
-      status: 400,
-    });
+    jsonResponse(res, codes.BadRequest, error, {}, {});
   }
 };
 

@@ -18,10 +18,16 @@ import { runValidate } from "../validators/index.js";
 const router = express.Router();
 
 router.post("/register", userRegisterValidators, runValidate, registerUser);
-router.post("/login",userLoginValidators,/* runValidate*/verifyToken,loginUser);
-router.get("/get/:userId", getUser);
-router.get("/getAll", getAllUsers);
-router.patch("/delete/:userId", deleteUser);
-router.patch("/update/:userId", updateUser);
+router.post(
+  "/login",
+  userLoginValidators,
+  /* runValidate*/
+  verifyToken,
+  loginUser
+);
+router.get("/get/:userId", verifyToken, getUser);
+router.get("/getAll", verifyToken, getAllUsers);
+router.patch("/delete/:userId", verifyToken, deleteUser);
+router.patch("/update/:userId", verifyToken, updateUser);
 
 export default router;
