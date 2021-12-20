@@ -22,10 +22,13 @@ app.use(morgan("dev"));
 //import router
 import userRoute from "./routes/userRoute.js";
 import documentRoute from "./routes/documentRoute.js";
+import leaveRoute from "./routes/leaveRoute.js";
+import holidayRoute from "./routes/holidayRoute.js";
 // api calls
 app.use("/api/user/", userRoute);
 app.use("/api/document/", documentRoute);
-
+app.use("/api/leave/", leaveRoute);
+app.use("/api/holiday/", holidayRoute);
 // error handling
 app.use(notFound);
 app.use(errorHandler);

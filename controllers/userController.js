@@ -293,14 +293,14 @@ export const deleteUser = async (req, res) => {
     }
 
     // if user is successfully soft deleted then return success message to client
-    res.json({
+    return res.json({
       error: "",
       payload: user,
       message: "User deleted successfully.",
       status: 200,
     });
   } catch (error) {
-    res.json({
+   return res.json({
       error: error.message,
       payload: {},
       message: "Please provide proper user id",
