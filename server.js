@@ -31,6 +31,10 @@ app.use("/api/leave/", leaveRoute);
 app.use("/api/holiday/", holidayRoute);
 app.use("/api/dashboard", dashboardRoute);
 // error handling
+app.get("/", (req, res) => {	
+  res.status(200).send("Welcome to ems-backend!");	
+});	
+
 app.use(notFound);
 app.use(errorHandler);
 

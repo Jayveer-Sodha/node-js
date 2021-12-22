@@ -34,6 +34,7 @@ export const registerUser = async (req, res) => {
     bank_ac,
     email,
     password,
+    meta
   } = req.body;
   try {
     User.findOne({ email }).exec(async (err, user) => {
@@ -60,30 +61,31 @@ export const registerUser = async (req, res) => {
         const newUser = await User.create({
           first_name,
           last_name,
-          username: first_name + last_name,
+          username : first_name+last_name,
           user_role,
           user_role_id,
-          current_address: encryptAES(current_address),
-          permanent_address: encryptAES(permanent_address),
-          account_enabled: "yes",
+          current_address,
+          permanent_address,
+          account_enabled : 'yes',
           profile_image,
           blood_group,
-          EMP_ID,
-          phone: encryptAES(phone),
-          alternate_mobile_no: encryptAES(alternate_mobile_no),
+          EMPID,
+          phone,
+          alternate_mobile_no,
           notes,
-          notify_online: "yes",
+          notify_online : 'yes',
           employment_start_date,
           employment_end_date,
           user_birth_date,
           last_login,
-          status: "",
+          status : '',
           user_department,
           user_designation,
-          resetPasswordToken: "",
-          resetPasswordExpires: "",
-          adharcard_no: encryptAES(adharcard_no),
-          bank_ac: encryptAES(bank_ac),
+          resetPasswordToken : '',
+          resetPasswordExpires : '',
+          adharcard_no,
+          meta,
+          bank_ac,
           email: email.toLowerCase(),
           password: encryptedPassword,
         });
@@ -128,6 +130,7 @@ export const loginUser = async (req, res) => {
         status: 400,
       });
     }
+    await User.findByIdAndUpdate({_id : user._id} , {last_login : new Date()})
     // if user is not paranoid then checking if provided password and email does match or not, if not then return error message to client
     // if (!user.matchPassword(password)) {
     //   return res.json({
@@ -225,6 +228,7 @@ export const getAllUsers = async (req, res) => {
         bank_ac,
         email,
         password,
+        meta
       }) => {
         let decUser = {
           _id,
@@ -256,6 +260,7 @@ export const getAllUsers = async (req, res) => {
           bank_ac: decryptionAES(bank_ac),
           email,
           password,
+          meta
         };
         return decUser;
       }

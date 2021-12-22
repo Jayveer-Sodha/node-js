@@ -1,4 +1,5 @@
 import express from "express";
+const router = express.Router();
 // importing signup controller.
 // import jsonResponse from '../utils/json-response';
 // import responseCodes from '../helpers/response-codes';
@@ -21,8 +22,6 @@ import {
   userLoginValidators,
 } from "../validators/auth.js";
 import { runValidate } from "../validators/index.js";
-
-const router = express.Router();
 
 import multer from "multer";
 import { canAccess } from "../middlewares/roleAuth.js";
