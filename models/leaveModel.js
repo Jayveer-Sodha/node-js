@@ -7,7 +7,7 @@ const leaveSchema = new mongoose.Schema({
       },    
       leave_type: {
         type: String,
-        enum: ['CL', 'ML', 'LP'],
+        enum: ['CL', 'ML', 'LWP'],
         default: ''
       },  
       from_date: {
@@ -41,8 +41,12 @@ const leaveSchema = new mongoose.Schema({
       },
       status: {
         type: String,
-        enum: ['new', 'pending', 'approved', 'declined','delete'],
+        enum: ['new', 'pending', 'approved', 'declined','delete', 'partial_approved'],
         default: 'new'
+      },
+      notes: {
+        type: String,
+        default: ''
       }
 },{timestamps:true});
 

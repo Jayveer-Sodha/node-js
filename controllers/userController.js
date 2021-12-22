@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 // registerUser POST request controller
 export const registerUser = async (req, res) => {
   // destructuring every data from request body
-  const { first_name, last_name,user_role , user_role_id , current_address, permanent_address,profile_image,blood_group , EMPID, phone, alternate_mobile_no, notes,employment_start_date,employment_end_date,user_birth_date, last_login, user_department,user_designation,adharcard_no,bank_ac, email, password } = req.body;
+  const { first_name, last_name,user_role , user_role_id , current_address, permanent_address,profile_image,blood_group , EMPID, phone, alternate_mobile_no, notes,employment_start_date,employment_end_date,user_birth_date, last_login, user_department,user_designation,adharcard_no,bank_ac, email, password , meta} = req.body;
   try {
     User.findOne({ email }).exec(async (err, user) => {
       if (user) {
@@ -37,14 +37,14 @@ export const registerUser = async (req, res) => {
           username : first_name+last_name,
           user_role,
           user_role_id,
-          current_address : encryptAES(current_address),
-          permanent_address : encryptAES(permanent_address),
+          current_address,
+          permanent_address,
           account_enabled : 'yes',
           profile_image,
           blood_group,
           EMPID,
-          phone :encryptAES(phone),
-          alternate_mobile_no :encryptAES(alternate_mobile_no),
+          phone,
+          alternate_mobile_no,
           notes,
           notify_online : 'yes',
           employment_start_date,
@@ -56,8 +56,9 @@ export const registerUser = async (req, res) => {
           user_designation,
           resetPasswordToken : '',
           resetPasswordExpires : '',
-          adharcard_no : encryptAES(adharcard_no),
-          bank_ac :encryptAES(bank_ac),
+          adharcard_no,
+          meta,
+          bank_ac,
           email: email.toLowerCase(),
           password: encryptedPassword,
         });
@@ -99,6 +100,7 @@ export const loginUser = async (req, res) => {
         status: 400,
       });
     }
+    await User.findByIdAndUpdate({_id : user._id} , {last_login : new Date()})
     // if user is not paranoid then checking if provided password and email does match or not, if not then return error message to client
     // if (!user.matchPassword(password)) {
     //   return res.json({
