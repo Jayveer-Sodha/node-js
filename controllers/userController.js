@@ -1,5 +1,6 @@
 import { User } from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+<<<<<<< HEAD
 import { decryptionAES, encryptAES } from "../validators/dataEncryption.js";
 
 import jsonResponse from "../utils/json-response.js";
@@ -7,6 +8,14 @@ import responseCodes from "../helpers/response-codes.js";
 import { successMessages, errorMessages } from "../utils/response-message.js";
 import bcrypt from "bcryptjs";
 import codes from "../helpers/response-codes.js";
+=======
+import {
+  codes,
+  errorMessages,
+  successMessages,
+} from "../utils/response-message.js";
+import { decryptionAES } from "../validators/dataEncryption.js";
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
 
 // registerUser POST request controller
 export const registerUser = async (req, res) => {
@@ -14,27 +23,52 @@ export const registerUser = async (req, res) => {
   const {
     first_name,
     last_name,
+<<<<<<< HEAD
+=======
+    username,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
     user_role,
     user_role_id,
     current_address,
     permanent_address,
+<<<<<<< HEAD
+=======
+    account_enabled,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
     profile_image,
     blood_group,
     EMP_ID,
     phone,
     alternate_mobile_no,
     notes,
+<<<<<<< HEAD
+=======
+    notify_online,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
     employment_start_date,
     employment_end_date,
     user_birth_date,
     last_login,
+<<<<<<< HEAD
     user_department,
     user_designation,
     adharcard_no,
+=======
+    userStatus,
+    user_department,
+    user_designation,
+    resetPasswordToken,
+    resetPasswordExpires,
+    adharaCard_no,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
     bank_ac,
     email,
     password,
   } = req.body;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
   try {
     User.findOne({ email }).exec(async (err, user) => {
       if (user) {
@@ -56,10 +90,10 @@ export const registerUser = async (req, res) => {
         );
       }
       if (!user) {
-        const encryptedPassword = await bcrypt.hash(password, 10);
         const newUser = await User.create({
           first_name,
           last_name,
+<<<<<<< HEAD
           username: first_name + last_name,
           user_role,
           user_role_id,
@@ -73,10 +107,26 @@ export const registerUser = async (req, res) => {
           alternate_mobile_no: encryptAES(alternate_mobile_no),
           notes,
           notify_online: "yes",
+=======
+          username,
+          user_role,
+          user_role_id,
+          current_address,
+          permanent_address,
+          account_enabled,
+          profile_image,
+          blood_group,
+          EMP_ID,
+          phone,
+          alternate_mobile_no,
+          notes,
+          notify_online,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
           employment_start_date,
           employment_end_date,
           user_birth_date,
           last_login,
+<<<<<<< HEAD
           status: "",
           user_department,
           user_designation,
@@ -103,6 +153,36 @@ export const registerUser = async (req, res) => {
             responseCodes.OK,
             errorMessages.noError,
             newUser,
+=======
+          userStatus,
+          user_department,
+          user_designation,
+          resetPasswordToken,
+          resetPasswordExpires,
+          adharaCard_no,
+          bank_ac,
+          email,
+          password,
+        });
+        if (newUser) {
+          const token = generateToken({
+            id: newUser._id,
+            role: newUser.user_role,
+            email: newUser.email,
+          });
+          const { username, email, _id } = await newUser;
+          const payload = {
+            username,
+            email,
+            _id,
+            token,
+          };
+          return jsonResponse(
+            res,
+            codes.EntryCreated,
+            errorMessages.noError,
+            payload,
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
             successMessages.Create
           );
         }
@@ -118,7 +198,7 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   // finding user based on provided email from db
-  User.findOne({ email }).exec(async (error, user) => {
+  User.findOne({ email }).exec((error, user) => {
     // checking if user is paranoid or not , if paranoid then return error message to client
     if (error || !user || !user.paranoid == false) {
       return res.status(400).json({
@@ -129,6 +209,7 @@ export const loginUser = async (req, res) => {
       });
     }
     // if user is not paranoid then checking if provided password and email does match or not, if not then return error message to client
+<<<<<<< HEAD
     // if (!user.matchPassword(password)) {
     //   return res.json({
     //     error: "Email & Password do not match",
@@ -175,7 +256,31 @@ export const loginUser = async (req, res) => {
         errorMessages.invalidPassword,
         {}
       );
+=======
+    if (!user.matchPassword(password)) {
+      return res.json({
+        error: "Email & Password do not match",
+        payload: {},
+        message: "",
+        status: 400,
+      });
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
     }
+    // if email and password get matched then generating a token to send client
+    const token = generateToken(user);
+    const { _id, username, email, user_role } = user;
+    res.status(200).json({
+      error: "",
+      payload: {
+        id: _id,
+        username,
+        email,
+        user_role,
+        token,
+      },
+      message: "User Login successfully",
+      status: 200,
+    });
   });
 };
 
@@ -333,14 +438,18 @@ export const deleteUser = async (req, res) => {
     }
 
     // if user is successfully soft deleted then return success message to client
-    return res.json({
+    res.json({
       error: "",
       payload: user,
       message: "User deleted successfully.",
       status: 200,
     });
   } catch (error) {
+<<<<<<< HEAD
     return res.json({
+=======
+    res.json({
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
       error: error.message,
       payload: {},
       message: "Please provide proper user id",
@@ -385,6 +494,7 @@ export const updateUser = async (req, res) => {
     });
   }
 };
+<<<<<<< HEAD
 
 export const updateProfilePic = async (req, res) => {
   const file = req.file;
@@ -477,3 +587,5 @@ export const resetPassword = async (req, res) => {
     })
     .catch((err) => jsonResponse(res, responseCodes.Invalid, err, {}));
 };
+=======
+>>>>>>> 09b3607175c4ee0ab64454a276e929c27a8bdcff
