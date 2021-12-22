@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema(
     },
     user_designation: {
       type: String,
-      default: "React.js Developer",
+      default: "Developer",
     },
     resetPasswordToken: {
       type: String,
