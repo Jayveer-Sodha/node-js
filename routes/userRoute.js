@@ -1,4 +1,5 @@
 import express from "express";
+const router = express.Router();
 // importing signup controller.
 // import jsonResponse from '../utils/json-response';
 // import responseCodes from '../helpers/response-codes';
@@ -22,7 +23,7 @@ import {
 } from "../validators/auth.js";
 import { runValidate } from "../validators/index.js";
 
-const router = express.Router();
+
 
 import multer from "multer";
 import { canAccess } from "../middlewares/roleAuth.js";
@@ -51,4 +52,5 @@ router.post("/profile", upload.single("profile-pic"), updateProfilePic);
 router.post("/forget-password", forgetPassword);
 
 router.post("/reset-password", resetPassword);
+
 export default router;
