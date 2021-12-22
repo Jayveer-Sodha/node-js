@@ -1,7 +1,9 @@
-import  mongoose  from "mongoose";
+import mongoose from "mongoose";
 
-const leaveSchema = new mongoose.Schema({
+const leaveSchema = new mongoose.Schema(
+  {
     user_id: {
+<<<<<<< HEAD
         type: String,
         default: ''
       },    
@@ -49,5 +51,60 @@ const leaveSchema = new mongoose.Schema({
         default: ''
       }
 },{timestamps:true});
+=======
+      type: String,
+      default: "",
+    },
+    email: {
+      type: String,
+      default: "",
+    },
+    username: {
+      type: String,
+      default: "",
+    },
+    leave_type: {
+      type: String,
+      enum: ["CL", "ML", "LP"],
+      default: "",
+    },
+    from_date: {
+      type: Date,
+      default: "",
+    },
+    to_date: {
+      type: Date,
+      default: "",
+    },
+    number_of_days: {
+      type: String,
+      default: "",
+    },
+    remaining_leave: {
+      type: String,
+      default: "",
+    },
+    leave_reason: {
+      type: String,
+      default: "",
+    },
+    approved_by_id: {
+      type: String,
+      default: "",
+    },
+    leave_day_type: {
+      type: String,
+      enum: ["full", "half"],
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["new", "pending", "approved", "declined", "delete"],
+      default: "new",
+    },
+  },
+  { timestamps: true }
+);
+>>>>>>> 6a541971b08b4598bb8dac91319a4b478ef3f4e0
 
 export const Leave = mongoose.model("Leave", leaveSchema);
