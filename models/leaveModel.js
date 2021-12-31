@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 const leaveSchema = new mongoose.Schema({
-  user_id: {
+    user_id: {
+      type: String,
+      default: ''
+    }, 
+    email: {
+      type: String,
+      default: ''
+    }, 
+    username: {
       type: String,
       default: ''
     },    

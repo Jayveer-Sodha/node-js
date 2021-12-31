@@ -69,7 +69,7 @@ export const registerUser = async (req, res) => {
           account_enabled : 'yes',
           profile_image,
           blood_group,
-          EMPID,
+          EMP_ID,
           phone,
           alternate_mobile_no,
           notes,
@@ -130,31 +130,7 @@ export const loginUser = async (req, res) => {
         status: 400,
       });
     }
-    await User.findByIdAndUpdate({_id : user._id} , {last_login : new Date()})
-    // if user is not paranoid then checking if provided password and email does match or not, if not then return error message to client
-    // if (!user.matchPassword(password)) {
-    //   return res.json({
-    //     error: "Email & Password do not match",
-    //     payload: {},
-    //     message: "",
-    //     status: 400,
-    //   });
-    // }
-    // // if email and password get matched then generating a token to send client
-    // const token = generateToken(user);
-    // const { _id, username, email, user_role } = user;
-    // res.status(200).json({
-    //   error: "",
-    //   payload: {
-    //     id: _id,
-    //     username,
-    //     email,
-    //     user_role,
-    //     token,
-    //   },
-    //   message: "User Login successfully",
-    //   status: 200,
-    // });
+    await User.findByIdAndUpdate({_id : user._id} , {last_login : new Date() , userStatus : 'active'})
     if (await bcrypt.compare(password, user.password)) {
       const token = generateToken(user._id, email, user.user_role);
       user.current_address = decryptionAES(user.current_address);
@@ -180,6 +156,23 @@ export const loginUser = async (req, res) => {
       );
     }
   });
+};
+
+// logout POST request controller
+export const logOut = async (req, res) => {
+  const { user_id } = req.body;
+  User.findByIdAndUpdate({ _id : user_id} , {userStatus : 'inactive'})
+  .then(() => {
+    return jsonResponse(
+      res,
+      responseCodes.OK,
+      errorMessages.noError,
+      {},
+      successMessages.Logout
+    );
+  })
+  .catch((err) => jsonResponse(res, responseCodes.Invalid, err, {}));
+  
 };
 
 // getAllUser GET request controller
@@ -358,6 +351,15 @@ export const deleteUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
+    const file = req.file;
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+      return jsonResponse(
+        res,
+        responseCodes.Invalid,
+        errorMessages.missingParameter,
+        {}
+      );
+    }
     // try to find user in db with provided user_id
     User.findById(userId).exec(async (err, user) => {
       //checking if user is paranoid then return not found message to client
@@ -372,27 +374,38 @@ export const updateUser = async (req, res) => {
 
       // checking if user is not paranoid then try to update user accordingly req.body
       if (user.paranoid == false) {
-        const user = await User.findByIdAndUpdate({ _id: userId }, req.body);
+        if(Object.keys(req.body).length > 0){
+          await User.findByIdAndUpdate({ _id: userId }, req.body);
+        }
+        if(file){
+          if(file.path != ''){
+            await User.findByIdAndUpdate({ _id: userId },{ profile_image: file.path });
+          }
+        }
+        const userData = await User.findOne({ _id : userId})
+        userData.adharaCard_no = decryptionAES(userData.adharaCard_no);
+        userData.bank_ac = decryptionAES(userData.bank_ac);
+        userData.phone = decryptionAES(userData.phone);
+        userData.alternate_mobile_no = decryptionAES(userData.alternate_mobile_no);
+        userData.current_address = decryptionAES(userData.current_address);
+        userData.permanent_address = decryptionAES(userData.permanent_address);
         return res.json({
           error: "",
-          payload: user,
+          payload: userData,
           message: "User updated successfully.",
           status: 200,
         });
       }
     });
   } catch (error) {
-    res.json({
-      error: error.message,
-      payload: {},
-      message: "Please provide proper data",
-      status: 400,
-    });
+    jsonResponse(res, responseCodes.Invalid, error, {})
   }
 };
 
+
 export const updateProfilePic = async (req, res) => {
   const file = req.file;
+  console.log(file);
   const { user_id } = req.body;
   if (!user_id) {
     return jsonResponse(
@@ -465,20 +478,26 @@ export const resetPassword = async (req, res) => {
       {}
     );
   }
-  encryptedPassword = await bcrypt.hash(password, 10);
-
-  User.findByIdAndUpdate(user_id, {
-    password: encryptedPassword,
-    resetPasswordToken: token,
-  })
-    .then(() => {
-      return jsonResponse(
-        res,
-        responseCodes.OK,
-        errorMessages.noError,
-        {},
-        successMessages.Update
-      );
-    })
-    .catch((err) => jsonResponse(res, responseCodes.Invalid, err, {}));
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  User.find({_id : user_id})
+  .then((userExist) => {
+    if(userExist){
+      User.findByIdAndUpdate(user_id, {
+        password: encryptedPassword,
+        resetPasswordToken: token,
+      })
+      .then(() => {
+          return jsonResponse(
+            res,
+            responseCodes.OK,
+            errorMessages.noError,
+            {},
+            successMessages.Update
+          );
+      })
+      .catch((err) => jsonResponse(res, responseCodes.Invalid, err, {}));
+    }
+  }).catch((err) => jsonResponse(res, responseCodes.Invalid, err, {}));
+ 
+ 
 };

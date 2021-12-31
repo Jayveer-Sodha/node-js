@@ -10,7 +10,7 @@ export function getHolidays(req, res) {
   // this query will find all holidays which will be after today
   let today = new Date();
 
-  Holiday.find({ holiday_date: { $gt: today } })
+  Holiday.find({ holiday_date: { $gte: today } }).sort({holiday_date : 1}) 
     .then((holidays) => {
       return jsonResponse(
         res,
@@ -29,7 +29,7 @@ export function getBirthdays(req, res) {
   // this query will find all holidays which will be after today
   let today = new Date();
 
-  User.find({ user_birth_date: { $gt: today } })
+  User.find({ user_birth_date: { $gte: today } }).sort({user_birth_date : 1}) 
     .then((birthday) => {
       let birthdayList = birthday.map(
         ({ user_birth_date, email, username, _id }) => {
@@ -69,7 +69,7 @@ export function getLeaves(req, res) {
     Developer: { user_id: userId },
   };
 
-  Leave.find(searchKey[findQuery])
+  Leave.find(searchKey[findQuery]).sort({createdAt : -1}) 
     .then((userLeave) => {
       return jsonResponse(
         res,
